@@ -6,6 +6,7 @@ import com.corncrack.repository.CategoryRepository;
 import com.corncrack.request.CategoryRequest;
 import com.corncrack.response.CategoryResponse;
 import lombok.RequiredArgsConstructor;
+import org.jspecify.annotations.Nullable;
 import org.springframework.stereotype.Service;
 
 import java.util.LinkedList;
@@ -20,14 +21,11 @@ public class CategoryService {
 
     public List<CategoryResponse> getAll() {
         List<Category> categories = new LinkedList<>(repository.findAll());
-
         return categories.stream().map(CategoryMapper::toResponse).toList();
     }
 
     public CategoryResponse save(CategoryRequest request) {
-        Category category = CategoryMapper.toCategory(request);
-        category = repository.save(category);
-        return CategoryMapper.toResponse(category);
+        return CategoryMapper.toResponse(repository.save(CategoryMapper.toCategory(request)));
     }
 
     public Optional<Category> getCategoryById(Long id) {
@@ -36,5 +34,11 @@ public class CategoryService {
 
     public void deleteCategoryById(Long id) {
         repository.deleteById(id);
+    }
+
+    public List<CategoryResponse> saveAll(List<CategoryRequest> requests) {
+        List<Category> responses = repository.saveAll(requests.stream().map(CategoryMapper::toCategory).toList());
+        return responses.stream().map(CategoryMapper::toResponse).toList();
+
     }
 }

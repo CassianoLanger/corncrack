@@ -40,4 +40,8 @@ public class CategoryController {
          service.deleteCategoryById(id);
          return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
+    @PostMapping
+    public ResponseEntity<List<CategoryResponse>> saveCategories(@RequestBody List<CategoryRequest> requests){
+        return ResponseEntity.status(HttpStatus.CREATED).body(service.saveAll(requests));
+    }
 }
