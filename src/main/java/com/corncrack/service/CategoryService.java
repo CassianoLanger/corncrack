@@ -28,12 +28,17 @@ public class CategoryService {
         return CategoryMapper.toResponse(repository.save(CategoryMapper.toCategory(request)));
     }
 
-    public Optional<Category> getCategoryById(Long id) {
-       return repository.findById(id);
+    public Optional<CategoryResponse> getCategoryById(Long id) {
+       return repository.findById(id).map(CategoryMapper::toResponse);
     }
 
-    public void deleteCategoryById(Long id) {
-        repository.deleteById(id);
+    public Boolean deleteCategoryById(Long id) {
+        if(repository.existsById(id)){
+            repository.deleteById(id);
+            return true;
+        }else{
+            return false;
+        }
     }
 
     public List<CategoryResponse> saveAll(List<CategoryRequest> requests) {
