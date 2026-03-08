@@ -6,9 +6,11 @@ import com.corncrack.repository.StreamingRepository;
 import com.corncrack.request.StremingRequest;
 import com.corncrack.response.StreamingResponse;
 import lombok.RequiredArgsConstructor;
+import org.jspecify.annotations.Nullable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -24,5 +26,27 @@ public class StreamingService {
     public StreamingResponse save(StremingRequest stremingRequest) {
         Streaming entity = StreamingMapper.toStreming(stremingRequest);
         return StreamingMapper.toResponse(repository.save(entity));
+    }
+
+    public Optional<StreamingResponse> getById(Long id) {
+        return repository.findById(id).map(StreamingMapper::toResponse);
+    }
+
+    public Boolean delete(Long id) {
+        if (repository.existsById(id)){
+            repository.deleteById(id);
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public  List<StreamingResponse> saveAll(List<StremingRequest> request) {
+        
+         List<Streaming> streamings = repository.saveAll(request.stream()
+                .map(StreamingMapper::toStreming)
+                .toList());
+         
+         return streamings.stream().map(StreamingMapper::toResponse).toList();
     }
 }
