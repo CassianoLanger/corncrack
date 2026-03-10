@@ -19,7 +19,6 @@ public class StreamingService {
     private final StreamingRepository repository;
 
     public List<StreamingResponse> getAll() {
-
         return repository.findAll().stream().map(StreamingMapper::toResponse).toList();
     }
 
