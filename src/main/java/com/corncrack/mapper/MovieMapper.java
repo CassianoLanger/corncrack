@@ -39,10 +39,12 @@ public class MovieMapper {
                 .map(CategoryMapper::toResponse)
                 .toList();
 
-        List<StreamingResponse> streaming = movie.getStreamings().stream().map(StreamingMapper::toResponse)
+        List<StreamingResponse> streaming = movie.getStreamings().stream()
+                .map(StreamingMapper::toResponse)
                 .toList();
 
         return MovieResponse.builder()
+                .id(movie.getId())
                 .title(movie.getTitle())
                 .description(movie.getDescription())
                 .releaseDate(movie.getReleaseDate())
