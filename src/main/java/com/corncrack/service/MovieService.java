@@ -2,6 +2,7 @@ package com.corncrack.service;
 
 import com.corncrack.entity.Category;
 import com.corncrack.entity.Movie;
+import com.corncrack.entity.Streaming;
 import com.corncrack.mapper.MovieMapper;
 import com.corncrack.repository.MovieRepository;
 import com.corncrack.request.MovieRequest;
@@ -18,6 +19,7 @@ public class MovieService {
 
     private final MovieRepository repository;
     private final CategoryService categoryService;
+    private final StreamingService streamingService;
 
     public List<MovieResponse> findAll(){
         return repository.findAll().stream()
@@ -27,6 +29,10 @@ public class MovieService {
 
     public MovieResponse save(MovieRequest request) {
         Movie movie = MovieMapper.toMovie(request);
+
+        movie.setCategories(this.findCategories(movie.getCategories()));
+        movie.setStreamings(this.findStreamings(movie.getStreamings()));
+
         return MovieMapper.toResponse(repository.save(movie));
     }
 
@@ -42,14 +48,20 @@ public class MovieService {
     private List<Category> findCategories(List<Category> categories){
         List<Category> categoriesFound = new ArrayList<>();
 
-        categories.forEach(e -> {
-            if(categoryService.getCategoryById(e.getId()).isPresent()){
-                categoriesFound.add(e);
-            }
+        categories.forEach(category -> {
+            if(categoryService.getCategoryById(category.getId()).isPresent()){ categoriesFound.add(category);}
         });
 
         return categoriesFound;
     }
 
+    private List<Streaming> findStreamings(List<Streaming> streamings){
+        List<Streaming> streamingsFound = new ArrayList<>();
 
+        streamings.forEach(streaming -> {
+            if(streamingService.getById(streaming.getId()).isPresent()){streamingsFound.add(streaming);}
+        });
+
+        return streamingsFound;
+    }
 }
